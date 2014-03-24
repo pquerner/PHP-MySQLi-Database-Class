@@ -31,6 +31,12 @@ class MysqliDb
      */
     protected $_query;
     /**
+     * The previously run SQL query
+     *
+     * @var string
+     */
+    protected $_oldQuery;
+    /**
      * An array that holds where joins
      *
      * @var array
@@ -346,6 +352,16 @@ class MysqliDb
     {
         return $this->_mysqli->insert_id;
     }
+    
+    /**
+     * This methods returns the last sql statement that was run
+     *
+     * @return string The last sql statement.
+     */
+    public function getLastSQLQuery()
+    {
+        return $this->_oldQuery;
+    }
 
     /**
      * Escape harmful characters which might affect a query.
@@ -556,11 +572,14 @@ class MysqliDb
                 }
             }
         }
-        // Bind parameters to statment
+        // Bind parameters to statement
         if ($hasTableData || $hasConditional) {
             call_user_func_array(array($stmt, 'bind_param'), $this->refValues($this->_bindParams));
         }
 
+        // Store the old query for debugging purposes
+        $this->_oldQuery = $this->_query;
+        
         return $stmt;
     }
 
