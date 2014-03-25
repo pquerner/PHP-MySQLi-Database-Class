@@ -672,6 +672,17 @@ class MysqliDb
     }
 
 	/*
+     * Set debug information
+     */
+
+    public function enableLogging() {
+        $this->_query = "SET GLOBAL general_log = 'ON';";
+        $stmt = $this->_buildQuery();
+        $stmt->execute();
+        $this->reset();
+    }
+
+    /*
      * Simple addition to allow mysqli->ping() to keep unused connections open on
      * long-running scripts, or to reconnect timed out connections (if php.ini has 
      * global mysqli.reconnect set to true). Can't do this directly using object 
